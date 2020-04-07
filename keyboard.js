@@ -23,7 +23,7 @@ const Keyboard = {
         this.elements.keysContainer = document.createElement("div");
 
         
-        this.elements.main.classList.add("keyboard", "keyboard--hidden");
+        this.elements.main.classList.add("keyboard");
         this.elements.textField.classList.add("use-keyboard-input");
         this.elements.keysContainer.classList.add("keyboard__keys");
         this.elements.keysContainer.appendChild(this._createKeys());
