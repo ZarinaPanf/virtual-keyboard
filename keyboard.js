@@ -1,9 +1,8 @@
-
 const Keyboard = { 
     elements: { 
         main: null, 
         keysContainer: null, 
-        keys: [] 
+        keys: []
     },
 
     eventHandlers: { 
@@ -21,7 +20,6 @@ const Keyboard = {
         this.elements.main = document.createElement("div");
         this.elements.textField = document.createElement("textarea");
         this.elements.keysContainer = document.createElement("div");
-
         
         this.elements.main.classList.add("keyboard");
         this.elements.textField.classList.add("use-keyboard-input");
@@ -29,12 +27,10 @@ const Keyboard = {
         this.elements.keysContainer.appendChild(this._createKeys());
 
         this.elements.keys = this.elements.keysContainer.querySelectorAll(".keyboard__key");
-
         
         this.elements.main.appendChild(this.elements.keysContainer);
         document.body.appendChild(this.elements.main);
         document.body.appendChild(this.elements.textField);
-        
         
         document.querySelectorAll(".use-keyboard-input").forEach(element => {
             element.addEventListener("focus", () => {
@@ -43,6 +39,7 @@ const Keyboard = {
                 });
             });
         });
+
     },
 
     _createKeys() { 
@@ -54,21 +51,33 @@ const Keyboard = {
             "done", "z", "x", "c", "v", "b", "n", "m", ",", ".", "?",
             "space"
         ];
-        const Russian = [
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
-            "й", "ц", "у", "к", "е", "н"
-        ]
         
         const createIconHTML = (icon_name) => {
             return `<i class="material-icons">${icon_name}</i>`;
         };
 
         KeyLayout.forEach(key => {
-            const keyElement = document.createElement("button");
+            const keyElement = document.createElement("kbd");
             const insertLineBreak = ["backspace", "p", "enter", "?"].indexOf(key) !== -1; 
             
-            keyElement.setAttribute("type", "button");
             keyElement.classList.add("keyboard__key");
+            
+            // toggle class on keys when real keyboard key is clicked
+            toggleKeyPress = (el) => {
+            if (el.classList.contains("keyboard__key--active")) {
+              el.classList.remove("keyboard__key--active");
+            } else {
+                 key.classList.remove("keyboard__key--active");
+              el.classList.toggle("keyboard__key--active");
+            }
+          }
+
+          //  keydown event from real keyboard
+          keyElement.addEventListener('keydown', function(e) {
+            let keycode = e.code.toString();
+            keyElement.setAttribute("data-key", `"${keycode}"`);
+            toggleKeyPress(keycode);
+            });
 
             switch (key) {
                 case "backspace":
@@ -78,6 +87,7 @@ const Keyboard = {
                         this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1); 
                         this._triggerEvent("oninput"); 
                     });
+
                     break;
 
                 case "caps":
@@ -93,7 +103,7 @@ const Keyboard = {
                 keyElement.classList.add("keyboard__key--wide");
                 keyElement.innerHTML = createIconHTML("keyboard_return");
                 keyElement.addEventListener("click", () => {
-                    this.properties.value += "/n";
+                    this.properties.value += "\n";
                     this._triggerEvent("oninput"); 
                 });
                 break;
@@ -164,7 +174,8 @@ const Keyboard = {
         this.eventHandlers.oninput = oninput;
         this.eventHandlers.onclose = onclose;
         this.elements.main.classList.add("keyboard--hidden");
-    }
+    },
+  
 };
 
 window.addEventListener("DOMContentLoaded", function(){ 
